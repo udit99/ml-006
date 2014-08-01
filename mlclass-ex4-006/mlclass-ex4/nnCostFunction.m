@@ -103,35 +103,21 @@ Theta2_grad = zeros(size(Theta2));
 
 
 
-%keyboard;
-%for t = 1:m
-  a1 = X(t,:);
-  a1 = [1 a1];
+d3 = a3 - yv;
 
-  z2 = a1 * Theta1';
-  a2 = sigmoid(z2);
-  a2 = [1 a2];
+d2 = (d3 * stripped_theta2) .* sigmoidGradient(z2);
 
-  z3 = a2 * Theta2';
-  a3 = sigmoid(z3);
+Delta2 = d3' * a2;
 
-  d3 = a3 - yv(t,:);
+Delta1 = (a1' * d2)';
 
-  %d3 is a 1x10 row vector at this stage
+Theta1_grad = Delta1 ./ m;
+Theta2_grad = Delta2 ./ m;
 
-  d2 = Theta2' * d3' .* sigmoidGradient(z2);
 
-  %d2 is a 26x25 Matrix now
-  d2 = d2(2:end,:);
-  %d2 is a 25x25 Matrix now
 
-  %Problem :
-  %  The accumalator is supposed to be d3 * a2 and d2 * a1 
-  %  but d3 is 1x10 and a2 = 1x26
-  %  and d2 is 26x25 and a1 is 1x401
-
-%endfor
-
+ Theta1_grad(:,2:end) = Theta1_grad(:,2:end) + (lambda .* (Theta1(:,2:end)))./m;
+ Theta2_grad(:,2:end) = Theta2_grad(:,2:end) + (lambda .* (Theta2(:,2:end)))./m;
 
 
 
